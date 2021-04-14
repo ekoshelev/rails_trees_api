@@ -37,24 +37,24 @@ module HomeHelper
     end
   end
 
-  # return the solution using a hash instead of rail's inbuilt associations
+  # return the solution using a hash instead of rail's inbuilt associations, potentially faster but not space efficient
   def find_solution_with_hash(a,b,nodes)
     child_hash = {}
     nodes.each do |node|
       child_hash[node.id] = node.parent_id
     end
-    return find_height_root_and_common_ancestor(a, b, child_hash)
+    return hash_solution_find_height_root_and_common_ancestor(a, b, child_hash)
   end
 
   # return the solution using a hash instead of rail's inbuilt associations
-  def find_height_root_and_common_ancestor(a, b, child_hash)
-    a_path = find_path(a, child_hash, [])
-    b_path = find_path(b, child_hash, [])
+  def hash_solution_find_height_root_and_common_ancestor(a, b, child_hash)
+    a_path = hash_solution_find_path(a, child_hash, [])
+    b_path = hash_solution_find_path(b, child_hash, [])
     find_answer_from_path(a_path, b_path)
   end
 
   # return the solution using a hash instead of rail's inbuilt associations
-  def find_path(value, child_hash, path)
+  def hash_solution_find_path(value, child_hash, path)
     if !child_hash[value]
       return path
     end
