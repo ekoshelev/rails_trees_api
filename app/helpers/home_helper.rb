@@ -48,7 +48,7 @@ module HomeHelper
       for i in (a_path.length - 1).downto(0) do
         for j in (b_path.length - 1).downto(0) do
           if a_path[i] == b_path[j]
-            return {'root' => a_path[a_path.length - 1], 'lca' => a_path[i], 'depth' => i + 1}
+            return {'root' => a_path[0], 'lca' => a_path[i], 'depth' => i + 1}
           end
         end
       end
