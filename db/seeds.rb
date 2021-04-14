@@ -9,10 +9,25 @@ require 'csv'
 
 csv_text = File.read('C:\Users\lizko\code\rails\dataplor_interview\lib\nodes.csv')
 csv = CSV.parse(csv_text, :headers => true, :encoding => 'ISO-8859-1')
+# csv.each do |row|
+#   n = Node.new
+#   n.id = row['id']
+#   n.parent_id = row['parent_id']
+#   n.save
+# end
+
+child_hash = {}
+
 csv.each do |row|
-  n = Node.new
-  n.id = row['id']
-  n.parent_id = row['parent_id']
-  n.save
+  child_hash[row['id']] = row['parent_id']
 end
+
+nodes = Node.all
+nodes.each do |node|
+  path = helpers.hash_solution_find_path(node.id, child_hash, [])
+  node.path = path.join('.')
+  puts path
+  node.save
+end
+
 

@@ -11,19 +11,26 @@ class HomeController < ActionController::API
     # note the gem ancestry: https://github.com/stefankroes/ancestry
     # also note ltree: https://www.postgresql.org/docs/9.1/ltree.html
     # https://github.com/gzigzigzeo/pg_closure_tree_rebuild
-    # TODO: will try to implement ltree before the interview
     if a != b && (nodes[0] == nil || nodes[1] == nil)
       render :json => {'error' => 'those nodes do not exist, please put a valid id'}
     else
-      if a == b
-        answer = helpers.find_height_root_lca(nodes[0], nodes[0])
-      else
-        answer = helpers.find_height_root_lca(nodes[0], nodes[1])
-      end
 
-      # solution using a hash, O(N) time to pull rows
-      # O(1) time to select instead of rails doing a select for each parent.
-      # useful if we want to preprocess data & cache
+      # solution using ltree:
+      if nodes[0].id == nodes[0].id
+        answer = {'root' => nodes[0].path[0], 'lca' => nodes[0].id, 'depth' => nodes[0].path.length}
+      end
+      answer = helpers.find_answer_from_paths(nodes[0], nodes[1])
+
+      # if a == b
+      #   answer = helpers.find_height_root_lca(nodes[0], nodes[0])
+      # else
+      #   answer = helpers.find_height_root_lca(nodes[0], nodes[1])
+      # end
+
+
+      # # solution using a hash, O(N) time to pull rows
+      # # O(1) time to select instead of rails doing a select for each parent.
+      # # # useful if we want to preprocess data & cache
       # nodes = Node.all
       # answer = helpers.find_solution_with_hash(a,b,nodes)
       render :json => answer
@@ -51,6 +58,11 @@ class HomeController < ActionController::API
     render :json => answer
   end
 
+  def update_paths
+    nodes = Node.all
+    helpers.update_paths(nodes)
+    render :json => {'result' => 'updating paths'}
+  end
 end
 
 
