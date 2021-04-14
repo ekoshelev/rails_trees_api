@@ -1,4 +1,4 @@
-class HomeController < ApplicationController
+class HomeController < ActionController::API
   def common_ancestor
     # retrieve params from url
     a = params['a'].to_i
@@ -10,6 +10,8 @@ class HomeController < ApplicationController
     # for more efficient queries, note the gem closuretree: https://github.com/ClosureTree/closure_tree
     # also note ltree: https://www.postgresql.org/docs/9.1/ltree.html
     # TODO: will try to implement ltree before the interview
+    # TODO: switch to api
+    #
     if a != b && (nodes[0] == nil || nodes[1] == nil)
       render :json => {'error' => 'those nodes do not exist, please put a valid id'}
     else
