@@ -1,5 +1,5 @@
 module HomeHelper
-
+  # return height, root and lca given two nodes
   def find_height_root_lca(a_node, b_node)
     if a_node.id == b_node.id
       a_path = find_root_path(a_node)
@@ -7,10 +7,11 @@ module HomeHelper
     else
       a_path = find_root_path(a_node)
       b_path = find_root_path(b_node)
-      answer = find_answer_from_path(a_path, b_path)
+      answer = find_data_from_path(a_path, b_path)
     end
   end
 
+  # returns the path from root to node in an array
   def find_root_path(node)
     path_array = []
     parent = node.parent
@@ -21,7 +22,8 @@ module HomeHelper
     path_array
   end
 
-  def find_answer_from_path(a_path, b_path)
+  # given two paths, return the root, lca, and depth of lca
+  def find_data_from_path(a_path, b_path)
     if a_path[a_path.length - 1] != b_path[b_path.length - 1]
       return {'root' => 'null', 'lca' => 'null', 'depth' => 'null'}
     else
@@ -35,6 +37,7 @@ module HomeHelper
     end
   end
 
+  # return the solution using a hash instead of rail's inbuilt associations
   def find_solution_with_hash(a,b,nodes)
     child_hash = {}
     nodes.each do |node|
@@ -43,12 +46,14 @@ module HomeHelper
     return find_height_root_and_common_ancestor(a, b, child_hash)
   end
 
+  # return the solution using a hash instead of rail's inbuilt associations
   def find_height_root_and_common_ancestor(a, b, child_hash)
     a_path = find_path(a, child_hash, [])
     b_path = find_path(b, child_hash, [])
     find_answer_from_path(a_path, b_path)
   end
 
+  # return the solution using a hash instead of rail's inbuilt associations
   def find_path(value, child_hash, path)
     if !child_hash[value]
       return path

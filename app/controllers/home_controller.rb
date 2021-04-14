@@ -1,12 +1,15 @@
 class HomeController < ApplicationController
   def common_ancestor
+    # retrieve params from url
     a = params['a'].to_i
     b = params['b'].to_i
 
+    # retrieve nodes from DB
     nodes = Node.where("id = #{a} OR id = #{b}")
-    
+
     # for more efficient queries, note the gem closuretree: https://github.com/ClosureTree/closure_tree
     # also note ltree: https://www.postgresql.org/docs/9.1/ltree.html
+    # TODO: will try to implement ltree before the interview
     if a != b && (nodes[0] == nil || nodes[1] == nil)
       render :json => {'error' => 'those nodes do not exist, please put a valid id'}
     else
@@ -22,7 +25,6 @@ class HomeController < ApplicationController
       render :json => answer
     end
   end
-
 end
 
 
