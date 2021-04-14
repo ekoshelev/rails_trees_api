@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_14_183432) do
+ActiveRecord::Schema.define(version: 2021_04_14_203218) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "ltree"
   enable_extension "plpgsql"
 
   create_table "auctions", force: :cascade do |t|
@@ -78,6 +79,8 @@ ActiveRecord::Schema.define(version: 2021_04_14_183432) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "bird_id"
+    t.ltree "path"
+    t.index ["path"], name: "index_nodes_on_path", using: :gist
   end
 
   create_table "owner", primary_key: "owner_id", id: :integer, default: nil, force: :cascade do |t|

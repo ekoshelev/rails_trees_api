@@ -4,4 +4,5 @@ class Node < ApplicationRecord
   has_many :children, class_name: "Node", foreign_key: "parent_id"
   has_many :birds
 
+
 end

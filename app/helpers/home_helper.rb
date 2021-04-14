@@ -61,4 +61,64 @@ module HomeHelper
     path << child_hash[value]
     find_path(child_hash[value], child_hash, path)
   end
+
+  def retrieve_children_with_birds(node, array)
+    if !node
+      return
+    end
+    bird_name = ''
+    node.birds.each{|bird|
+      if bird.name
+        bird_name += bird.name
+      end
+    }
+    array << [node.id, bird_name]
+    node.children.each do |child|
+      retrieve_children_with_birds(child, array)
+    end
+    array
+  end
+
+  # return a hash of parent to child nodes
+  def create_hash(nodes)
+    hash = {}
+    nodes.each{ |node|
+      if hash.key?(node.parent_id)
+        hash[node.parent_id] << node.id
+      else
+        hash[node.parent_id] = []
+      end
+    }
+    hash
+  end
+
+  # return the solution using a hash instead of rail's inbuilt associations
+  def get_descendents_and_birds_from_hash(nodes, a)
+    hash = create_hash(nodes)
+    descendents = get_descendents_from_hash(hash, a, [])
+    descendent_nodes = Node.where("id = ANY(ARRAY#{descendents})").includes(:birds)
+    answer = []
+    descendent_nodes.each do |node|
+      bird_names = ''
+      node.birds.each{|bird|
+        if bird.name
+          bird_names += bird.name
+        end
+      }
+      answer << [node.id, bird_names]
+    end
+    answer
+  end
+
+  # returns all descendents of a node from a hash
+  def get_descendents_from_hash(hash, parent, array)
+    if hash[parent] == []
+      return
+    end
+    hash[parent].each do |child|
+      array << child
+      get_descendents_from_hash(hash, child, array)
+    end
+    array
+  end
 end

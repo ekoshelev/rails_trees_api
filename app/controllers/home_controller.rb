@@ -10,6 +10,7 @@ class HomeController < ActionController::API
     # for more efficient queries, note the gem closuretree: https://github.com/ClosureTree/closure_tree
     # note the gem ancestry: https://github.com/stefankroes/ancestry
     # also note ltree: https://www.postgresql.org/docs/9.1/ltree.html
+    # https://github.com/gzigzigzeo/pg_closure_tree_rebuild
     # TODO: will try to implement ltree before the interview
     if a != b && (nodes[0] == nil || nodes[1] == nil)
       render :json => {'error' => 'those nodes do not exist, please put a valid id'}
@@ -36,29 +37,20 @@ class HomeController < ActionController::API
     # retrieve initial nodes from DB
     node = Node.where(id: a).includes(:birds)
 
-    # retrieve children from DB, traditional rails way
-    # we run into N+1 problem
-    answer = retrieve_children(node[0], [])
+    # # retrieve children from DB, traditional rails way in trivial case
+    # # we run into N+1 queries problem
+    # # TODO: will try to implement ltree before the interview
+    answer = helpers.retrieve_children_with_birds(node[0], [])
+
+    # # retrieve children from DB, pull nodes into hash & then pull all birds for those nodes
+    # # only 2 queries needed, but issue of space
+    # # TODO: cache hash so we don't recalculate each time
+    # nodes = Node.all
+    # answer = helpers.get_descendents_and_birds_from_hash(nodes, a)
+
     render :json => answer
   end
 
-  def retrieve_children(node, array)
-    if !node
-      return
-    end
-    bird_name = ''
-    node.birds.each{|bird|
-      if bird.name
-        bird_name += bird.name
-      end
-    }
-    
-    array << [node.id, bird_name]
-    node.children.each do |child|
-      retrieve_children(child, array)
-    end
-    array
-  end
 end
 
 
