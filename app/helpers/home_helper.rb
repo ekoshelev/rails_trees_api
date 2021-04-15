@@ -70,13 +70,11 @@ module HomeHelper
       child_hash[node.id] = node.parent_id
     end
     nodes.each do |node|
-      if !node.path
-        path = hash_solution_find_path(node.id, child_hash, [])
+        path = hash_solution_find_path(node.id, child_hash, [node.id])
         node.path = path.reverse.join('.')
         saved = node.save!
         puts saved
         puts " path: " + node.path
-      end
     end
   end
 

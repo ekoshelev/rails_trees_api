@@ -42,12 +42,19 @@ class HomeController < ActionController::API
     a = params['a'].to_i
 
     # retrieve initial nodes from DB
-    node = Node.where(id: a).includes(:birds)
+    node = Node.where("id = #{a}").includes(:birds)
+    children = Node.where("path ~ '#{node[0].path}.*{,}'").includes(:birds)
+    children.merge(node)
+    answer = []
+    children.each do |child|
+      answer << [child.id, child.birds.map{|bird| bird.name}.join(' ')]
+    end
 
     # # retrieve children from DB, traditional rails way in trivial case
     # # we run into N+1 queries problem
     # # TODO: will try to implement ltree before the interview
     answer = helpers.retrieve_children_with_birds(node[0], [])
+
 
     # # retrieve children from DB, pull nodes into hash & then pull all birds for those nodes
     # # only 2 queries needed, but issue of space
