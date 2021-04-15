@@ -19,7 +19,7 @@ The evolution of this solution was as follows:
 Solution 1: Populate a hash with all node data such that hash[child_id] = hash[parent_id]. Recursively iterate through to find the path from root to node and use that to calculate root, lca, and depth. 
 This solution takes O(NC) time for N rows and C columns and for a very large dataset, would need way more space than necessary to parse obects and store the hash.
 
-Solution 2: Create rails self associations for Node using belongs_to :parent and has_many :children. Use this association to iterate through parent and/or child nodes to get the solution. This creates the N+1 query problem where if a parent has 1000 children, we need to create 1000 queries to get those children. This takes less space than solution 1, but still isn't very efficient.
+Solution 2: Create rails self associations for Node using belongs_to :parent and has_many :children. Use this association to iterate through parent and/or child nodes to get the solution. This creates the N+1 query problem where if a parent has 1000 children, we need to create 1000 queries to get those children and associated objects. This takes less space than solution 1, but still isn't very efficient.
 
 Solution 3: Add ltree to postgres database and store the path from root to node in the :path column of a node. This cuts runtime significantly because to find child nodes we only need to select nodes where the path is a subpath of our desired node's path, thus greatly reducing the number of queries from solution 2.
 
